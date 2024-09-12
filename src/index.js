@@ -8,6 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import { config } from "./assets/config";
 import ThemedSuspense from "./components/ThemedSuspense";
 import { GlobalStateProvider } from "./components/ChatWiget/ContextState";
+import { SeparateStateProvider } from "./pages/ChatWiget/ContextState";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -16,9 +17,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter basename={config.baseName}>
       <Suspense fallback={<ThemedSuspense />}>
-        <GlobalStateProvider>
-          <App />
-        </GlobalStateProvider>
+        <SeparateStateProvider>
+          <GlobalStateProvider>
+            <App />
+          </GlobalStateProvider>
+        </SeparateStateProvider>
       </Suspense>
     </BrowserRouter>
   </React.StrictMode>

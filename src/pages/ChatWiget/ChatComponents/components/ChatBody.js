@@ -2,12 +2,24 @@ import React, { useContext, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import hand from "../../../../assets/chatIcons/hand.svg";
 import { Chip } from "@mui/material";
-import { GlobalStateContext } from "../../ContextState";
+import { SeparateStateContext } from "../../ContextState";
 import { Ticket, TicketActive } from "../Icons";
 import { useRef } from "react";
 import "../../index.css";
+import { GlobalStateContext } from "../../../../components/ChatWiget/ContextState";
 
 const ChatBody = () => {
+  // const {
+  //   chatData,
+  //   loader,
+  //   tab,
+  //   userName,
+  //   setSearchVal,
+  //   chipData,
+  //   sampleChip,
+  //   sendMessage,
+  // } = useContext(SeparateStateContext);
+
   const {
     chatData,
     loader,
@@ -17,23 +29,16 @@ const ChatBody = () => {
     chipData,
     sampleChip,
     sendMessage,
-    sessionId,
-    setChipDataMessage,
-    isExpanded,
   } = useContext(GlobalStateContext);
 
   const handleChatChips = (searchVal) => {
     var repl = searchVal.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
     if (repl !== "") {
       const socMsg = {
-        msg_type: "query_req",
+        msg_type: "query",
         query: repl,
         msg_id: uuidv4(),
-        session_id: sessionId,
-        env: "staging",
-        stream: false,
-        filters: {},
-        tenant: "",
+        metadata: {},
       };
       sendMessage(socMsg);
       // const newchat = {
@@ -46,14 +51,10 @@ const ChatBody = () => {
     setSearchVal("");
   };
 
-  const handleChatChipsMessage = (each) => {
-    setChipDataMessage(each);
-  };
-
   const MessageEndRef = useRef(null);
   useEffect(() => {
     MessageEndRef?.current?.scrollIntoView();
-  }, [chatData, isExpanded]);
+  }, [chatData]);
 
   return (
     <div className="px-[20px] py-[10px] h-[100%]">
@@ -91,7 +92,7 @@ const ChatBody = () => {
                         each.user === "sender" ? "text-right" : ""
                       }`}
                     >
-                      {each?.time}
+                      10:10 AM
                     </p>
                   </div>
                 </div>
@@ -111,23 +112,20 @@ const ChatBody = () => {
               )}
               {!loader && (
                 <div className="flex gap-2 flex-wrap">
-                  {sampleChip?.map((each, index) => {
-                    if (index > -1) {
-                      return (
-                        <Chip
-                          key={index}
-                          label={each?.question}
-                          variant="outlined"
-                          sx={{
-                            fontSize: "12px",
-                            borderColor: "#156FEF",
-                            color: "#156FEF",
-                          }}
-                          // onClick={() => setSearchVal(each)}
-                          onClick={() => handleChatChipsMessage(each)}
-                        />
-                      );
-                    }
+                  {sampleChip.map((each) => {
+                    return (
+                      <Chip
+                        label={each}
+                        variant="outlined"
+                        sx={{
+                          fontSize: "12px",
+                          borderColor: "#156FEF",
+                          color: "#156FEF",
+                        }}
+                        // onClick={() => setSearchVal(each)}
+                        onClick={() => handleChatChips(each)}
+                      />
+                    );
                   })}
                 </div>
               )}

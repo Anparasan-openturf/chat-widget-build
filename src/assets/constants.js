@@ -3,6 +3,7 @@ import { ReactComponent as DocBuddy } from "./images/docquery_demo.svg";
 import { ReactComponent as ImageCaption } from "./images/image-caption-bg.svg";
 import { ReactComponent as CodeGenerator } from "./images/code-gen-bg.svg";
 import { ReactComponent as MyBuddy } from "./images/mybuddy-bg.svg";
+import { ReactComponent as AiImage } from "./chatIcons/Aisvg.svg";
 import { LinkdinIcon } from "./icons";
 
 export const playgroundrs = [
@@ -14,6 +15,15 @@ export const playgroundrs = [
     label: "DocBuddy",
     link: "/doc-buddy",
     disabled: false,
+  },
+  {
+    title: "'Ai' Based Chat",
+    content:
+      "Automated Customer Service with an AI Agent and answer questions based on the content.",
+    Image: () => <AiImage />,
+    label: "Chat",
+    link: "/chat",
+    disabled: true,
   },
   {
     title: "Image Captioning",

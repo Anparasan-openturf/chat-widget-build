@@ -1,11 +1,14 @@
-import React, { createContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
-
+import React, { createContext, useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import dayjs from "dayjs";
+// Sample data
 const chipArrayData = [
   "General policies",
   "Payroll and Compensation",
   "Company’s leave policies",
 ];
+
+// const chipArrayData = [];
 
 const sampleChip = [
   "How do I apply for leave?",
@@ -36,61 +39,150 @@ const sampleChip = [
 // ];
 
 const chatdatas = [];
+
 // Create the context
 export const GlobalStateContext = createContext("");
-export const SocketContext = createContext(null);
-let socket = null;
-
-export const initSocket = async () => {
-  // const token = localStorage.getItem("jwtToken");
-  const URL = "wss://fexo.io/xt_pro";
-
-  if (!socket) {
-    socket = io(URL, {
-      // auth: {
-      //   "x-authorization": token,
-      // },
-      // auth:token,
-      transports: ["websocket"],
-      upgrade: false,
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: 4,
-    });
-    // await getAudio()
-    socket.on("emitName", (messageData) => {
-      console.log(messageData, "___________");
-    });
-
-    // socket.on("sendMessage", (messageData) => {});
-    // socket.on("joinChannel", (messageData) => {});
-    // socket.on("exitChannel", (messageData) => {});
-    // socket.on("seenMessages", (messageData) => {});
-    // socket.on("messageSawBroadcast", (messageData) => {});
-  }
-  console.log("sohh", socket);
-  return socket;
-};
 
 export const GlobalStateProvider = ({ children }) => {
-  //Socket State
-  const [socket, setSocket] = useState(null);
-
-  const createConnection = async () => {
-    const socketInstance = await initSocket();
-    setSocket(socketInstance);
-  };
-
+  // WebSocket State
+  const [messages, setMessages] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [sessionId, setSessionId] = useState("");
+  const websocketRef = useRef(null); // WebSocket reference
+  // const newTme = dayjs(new Date()).format("hh:mm A");
+  // const URL = "wss://sandbox.openturf.dev/ws/faq/search";
+  const URL = "wss://sandbox.openturf.dev/ws/search";
   useEffect(() => {
-    createConnection();
+    // Create WebSocket connection
+    websocketRef.current = new WebSocket(URL);
+
+    // Connection opened
+    websocketRef.current.onopen = (event) => {
+      console.log("Socket-Logs", "WebSocket connection established");
+    };
+
+    // Listen for messages
+    websocketRef.current.onmessage = async (event) => {
+      setLoader(true);
+      const newMessage = await JSON.parse(event.data);
+      const newTme = await dayjs(new Date()).format("hh:mm A");
+      // const relatedQues = newMessage?.map((each) => {
+      //   console.log(each);
+      // });
+      setSessionId(newMessage?.session_id);
+      if (newMessage.msg_type === "query_ack") {
+        // setTimeout(setLoader(true), 5000);
+        if (newMessage.status === "failed") {
+          const receivedMsg = {
+            msg: "Uh-oh! Our servers decided to play hide and seek. Don’t worry, we’re expert seekers and will find them shortly!",
+            user: "receiver",
+            time: newTme,
+            // _id: uuidv4(),
+          };
+          setLoader(false);
+          setChatData((prevMessages) => [...prevMessages, receivedMsg]);
+          return;
+        }
+      }
+      if (
+        newMessage.status === "success" &&
+        newMessage.msg_type === "query_notify"
+      ) {
+        let receivedMsg = {
+          msg: "I’m not sure how to answer that. Can you please rephrase or simply provide the keyword related to the topic you want to know about?",
+          user: "receiver",
+          _id: uuidv4(),
+          time: newTme,
+        };
+        if (newMessage?.result?.qna.length > 0) {
+          receivedMsg = {
+            msg: newMessage?.result?.qna[0]?.answer,
+            user: "receiver",
+            _id: uuidv4(),
+            time: newTme,
+          };
+        }
+
+        const newQueries = newMessage?.result?.qna?.map((each, index) => ({
+          question: each?.query,
+          answer: each?.answer,
+        }));
+
+        const uniqueQueries = newQueries.filter(
+          (query, index, array) =>
+            index ===
+            array.findIndex(
+              (q) => q.question.toLowerCase() === query.question.toLowerCase()
+            )
+        );
+        setSampleChip(uniqueQueries);
+        setLoader(false);
+        setChatData((prevMessages) => [...prevMessages, receivedMsg]);
+      }
+    };
+
+    // Handle errors
+    websocketRef.current.onerror = (error) => {
+      console.error("Socket-Logs", "WebSocket Error:", error);
+    };
+
+    //Close
+    websocketRef.current.onclose = () => {
+      console.log(
+        "Socket-Logs",
+        "WebSocket connection closed. Attempting to reconnect..."
+      );
+    };
+
+    // Clean up on unmount
     return () => {
-      socket?.disconnect();
+      websocketRef.current.close();
     };
   }, []);
 
-  console.log(socket, "socket45465");
+  const sendMessage = async (message) => {
+    const newTme = await dayjs(new Date()).format("hh:mm A");
+    // console.log(JSON.stringify(message), "sx message", "Socket-Logs");
+    setChatData((prevChatData) => [
+      ...prevChatData,
+      {
+        msg: message?.query,
+        user: "sender",
+        _id: message.msg_id,
+        time: newTme,
+      },
+    ]);
+    if (
+      websocketRef.current
+      // websocketRef.current.readyState === WebSocket.OPEN
+    ) {
+      websocketRef.current.send(JSON.stringify(message));
+    }
+  };
 
+  const setChipDataMessage = async (message) => {
+    const newTme = await dayjs(new Date()).format("hh:mm A");
+    const newz = sampleChip.filter(
+      (each) => each.question !== message.question
+    );
+    setSampleChip(newz);
+
+    const receivedMsg = [
+      {
+        msg: message.question,
+        user: "sender",
+        _id: uuidv4(),
+        time: newTme,
+      },
+      {
+        msg: message.answer,
+        user: "receiver",
+        _id: uuidv4(),
+        time: newTme,
+      },
+    ];
+    setChatData((prevMessages) => [...prevMessages, ...receivedMsg]);
+  };
   // Define different states
   const [tab, setTab] = useState("home");
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -99,12 +191,11 @@ export const GlobalStateProvider = ({ children }) => {
   const [chipData, setChipData] = useState(chipArrayData);
   const [chatData, setChatData] = useState(chatdatas);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [sampleChip, setSampleChip] = useState([]);
 
+  console.log(sessionId, "sessionId");
   // Create a value object that will be passed to the provider
   const value = {
-    //socket
-    socket,
-
     isChatOpen,
     setIsChatOpen,
     searchVal,
@@ -119,8 +210,13 @@ export const GlobalStateProvider = ({ children }) => {
     setChatData,
     isExpanded,
     setIsExpanded,
-
+    sendMessage,
+    messages,
     sampleChip,
+    loader,
+    setLoader,
+    sessionId,
+    setChipDataMessage,
   };
 
   return (
