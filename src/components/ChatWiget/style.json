@@ -1,0 +1,29 @@
+{
+    "color":{
+        "text":"#156FEF"
+    },
+    "bubble":{
+        "sender":"",
+        "receiver":""
+    },
+    "paper":"#FFFFFF",
+    "msgBg":{
+        "sender":"#ECF4FF",
+        "receiver":"#F7F8F9"
+    },
+    "messageTxt":{
+        "sender": "#2C3E5D",
+        "receiver": "#44546F"
+    },
+    "chip":{
+        "bg":"#156FEF",
+        "text":"#156FEF"
+    },
+    "icon":{
+        "stroke":"#156FEF"
+    },
+    "sendIcon":"#156FEF"
+}
+
+
+

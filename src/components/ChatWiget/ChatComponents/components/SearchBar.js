@@ -11,6 +11,7 @@ const SearchBar = () => {
     chatData,
     sendMessage,
     sessionId,
+    style,
   } = useContext(GlobalStateContext);
 
   const hanldeSend = (e) => {
@@ -50,13 +51,13 @@ const SearchBar = () => {
             <Plus />
           </button>
         </div>
-        <form className="flex items-center">
+        <form className="flex items-center justify-between w-full">
           <input
             type="text"
             value={searchVal}
             onChange={(e) => setSearchVal(e.target.value)}
             placeholder="Message here..."
-            className="p-[10px] outline-none text-[16px] min-[320px]:w-[150px] md:w-[240px]"
+            className="p-[10px] outline-none text-[16px] w-[100%] ml-[5px]"
           />
 
           <button
@@ -64,7 +65,7 @@ const SearchBar = () => {
             className=" w-[36px] h-[36px] flex items-center justify-end rounded-3xl outline-none"
             onClick={hanldeSend}
           >
-            <Send />
+            <Send color={style.sendIcon} />
           </button>
         </form>
       </div>

@@ -1,10 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import hand from "../../../../assets/chatIcons/hand.svg";
-import { Chip } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 import { GlobalStateContext } from "../../ContextState";
 import { Ticket, TicketActive } from "../Icons";
 import { useRef } from "react";
+import robot from "../../../../assets/images/robot.png";
+import user from "../../../../assets/images/avatar.png";
 import "../../index.css";
 
 const ChatBody = () => {
@@ -68,24 +70,35 @@ const ChatBody = () => {
                   } flex gap-2 items-center text-[14px]`}
                 >
                   {/* use image tag if needed */}
-                  <div
-                    scr=""
+                  <img
+                    src={each.user === "receiver" ? robot : user}
                     alt=""
-                    className={`min-w-[34px] min-h-[34px] rounded-3xl mt-[auto] mb-[20px] ${
+                    className={`min-w-[34px] max-w-[34px] min-h-[34px] max-h-[34px] rounded-3xl mt-[auto] mb-[20px] object-contain ${
                       each.user === "sender" ? "bg-[#ECF4FF]" : "bg-[#F7F8F9]"
                     }`}
                   />
 
                   <div className="">
-                    <p
+                    <Typography
+                      variant={each.user === "sender" ? "sender" : "receiver"}
+                      bgcolor={
+                        each.user === "sender"
+                          ? "messageBg.sender"
+                          : "messageBg.receiver"
+                      }
                       className={` min-h-[40px] flex items-center px-[12px] py-[10px] flex flex-wrap text-pretty ${
                         each.user === "sender"
-                          ? "bg-[#ECF4FF] text-[#2C3E5D] rounded-tl-[8px] rounded-tr-[8px] rounded-br-[0px] rounded-bl-[8px] ml-[40px]"
-                          : "bg-[#F7F8F9] text-[#44546F] rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[0px] mr-[40px]"
+                          ? "rounded-tl-[8px] rounded-tr-[8px] rounded-br-[0px] rounded-bl-[8px] ml-[40px]"
+                          : "rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[0px] mr-[40px]"
                       }`}
+                      sx={
+                        each.user === "sender"
+                          ? { marginLeft: "50px" }
+                          : { marginRight: "50px" }
+                      }
                     >
                       {each.user === "sender" ? each.msg : each.msg}
-                    </p>
+                    </Typography>
                     <p
                       className={`text-[#8590A2] text-[10px] pt-[5px] ${
                         each.user === "sender" ? "text-right" : ""
@@ -120,8 +133,8 @@ const ChatBody = () => {
                           variant="outlined"
                           sx={{
                             fontSize: "12px",
-                            borderColor: "#156FEF",
-                            color: "#156FEF",
+                            borderColor: "chip.background",
+                            color: "chip.text",
                           }}
                           // onClick={() => setSearchVal(each)}
                           onClick={() => handleChatChipsMessage(each)}
@@ -158,9 +171,13 @@ const ChatBody = () => {
                     <img src={hand} alt="hand" />
                   </span>
                 </p>
-                <p className="text-[40px] text-[#156FEF] font-600">
+                <Typography
+                  color={"primary.main"}
+                  sx={{ fontSize: "40px", fontWeight: "600px !important" }}
+                  // className="text-[40px] text-[#156FEF] font-600"
+                >
                   {userName}
-                </p>
+                </Typography>
                 <p className="text-[20px] text-[#758195] font-500 pt-[10px]">
                   How can I help you today?
                 </p>
@@ -194,7 +211,13 @@ const ChatBody = () => {
                 <img src={hand} alt="hand" />
               </span>
             </p>
-            <p className="text-[40px] text-[#156FEF] font-600">{userName}</p>
+            <Typography
+              color={"primary.main"}
+              sx={{ fontSize: "40px", fontWeight: "600px !important" }}
+              // className="text-[40px] text-[#156FEF] font-600"
+            >
+              {userName}
+            </Typography>
             <p className="text-[20px] text-[#758195] font-500 pt-[10px]">
               Start your Quiz
             </p>

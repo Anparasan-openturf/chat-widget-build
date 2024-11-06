@@ -94,7 +94,7 @@ export const GlobalStateProvider = ({ children }) => {
           _id: uuidv4(),
           time: newTme,
         };
-        if (newMessage?.result?.qna.length > 0) {
+        if (newMessage?.result?.qna?.length > 0) {
           receivedMsg = {
             msg: newMessage?.result?.qna[0]?.answer,
             user: "receiver",
@@ -146,7 +146,7 @@ export const GlobalStateProvider = ({ children }) => {
     setChatData((prevChatData) => [
       ...prevChatData,
       {
-        msg: message?.query,
+        msg: message?.query.toLowerCase(),
         user: "sender",
         _id: message.msg_id,
         time: newTme,
@@ -192,10 +192,13 @@ export const GlobalStateProvider = ({ children }) => {
   const [chatData, setChatData] = useState(chatdatas);
   const [isExpanded, setIsExpanded] = useState(false);
   const [sampleChip, setSampleChip] = useState([]);
+  const [style, setStyle] = useState();
 
   console.log(sessionId, "sessionId");
   // Create a value object that will be passed to the provider
   const value = {
+    style,
+    setStyle,
     isChatOpen,
     setIsChatOpen,
     searchVal,
