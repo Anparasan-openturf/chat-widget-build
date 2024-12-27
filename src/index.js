@@ -9,22 +9,17 @@ import { config } from "./assets/config";
 import ThemedSuspense from "./components/ThemedSuspense";
 import { GlobalStateProvider } from "./components/ChatWiget/ContextState";
 import { SeparateStateProvider } from "./pages/ChatWiget/ContextState";
+import ChatWidget from "./components/ChatWiget";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter basename={config.baseName}>
-      <Suspense fallback={<ThemedSuspense />}>
-        <SeparateStateProvider>
+
           <GlobalStateProvider>
-            <App />
+            <ChatWidget />
           </GlobalStateProvider>
-        </SeparateStateProvider>
-      </Suspense>
-    </BrowserRouter>
-  </React.StrictMode>
+    
 );
 
 // If you want to start measuring performance in your app, pass a function
