@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import hand from "../../../../assets/chatIcons/hand.svg";
+// import hand from "../../../../assets/chatIcons/hand.svg";
 import { Box, Chip, Typography } from "@mui/material";
 import { GlobalStateContext } from "../../ContextState";
 import { Ticket, TicketActive } from "../Icons";
@@ -8,6 +8,13 @@ import { useRef } from "react";
 import robot from "../../../../assets/images/robot.png";
 import user from "../../../../assets/images/avatar.png";
 import "../../index.css";
+
+const HandComponent = () => {
+  // return <img src={hand} alt="hand" />;
+
+  const hand = "🖐️";
+  return <span className="text-4xl">{hand}</span>;
+};
 
 const ChatBody = () => {
   const {
@@ -168,7 +175,7 @@ const ChatBody = () => {
                 <p className="flex items-center text-[40px] text-[#2C3E5D] font-600">
                   Hi
                   <span>
-                    <img src={hand} alt="hand" />
+                    <HandComponent />
                   </span>
                 </p>
                 <Typography
@@ -208,7 +215,7 @@ const ChatBody = () => {
             <p className="flex items-center text-[40px] text-[#2C3E5D] font-600">
               Hi
               <span>
-                <img src={hand} alt="hand" />
+                <HandComponent />
               </span>
             </p>
             <Typography
