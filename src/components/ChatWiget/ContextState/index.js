@@ -52,7 +52,9 @@ export const GlobalStateProvider = ({ children }) => {
   // const newTme = dayjs(new Date()).format("hh:mm A");
   // const URL = "wss://sandbox.openturf.dev/ws/faq/search";
   // const URL = "wss://sandbox.openturf.dev/ws/search";
-  const URL = "wss://ascenthr-dev.openturf.dev/ws/search";
+  // const URL = "wss://ascenthr-dev.openturf.dev/ws/search";
+  const URL = process.env.REACT_APP_SOCKET_URL;
+
   useEffect(() => {
     // Create WebSocket connection
     websocketRef.current = new WebSocket(URL);

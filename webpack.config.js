@@ -7,7 +7,8 @@ const svgLoader = {
 module.exports = {
   entry: './src/Widget-Entry.js', // Entry point
   output: {
-    path: path.resolve(__dirname, 'dist'), // Output directory
+
+    path: path.resolve(__dirname, 'build'), // Output directory
     filename: 'ai-chat.js', // Output bundle file
     clean: true, // Clean the dist folder on each build
     library: 'aiChat',
