@@ -1,22 +1,28 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const dotenv = require("dotenv");
+
+// Load environment variables from .env file
+dotenv.config();
+
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const svgLoader = {
   test: /\.svg$/,
-  use: ['@svgr/webpack', 'file-loader'],
+  use: ["@svgr/webpack", "file-loader"],
 };
 module.exports = {
-  entry: './src/Widget-Entry.js', // Entry point
+  entry: "./src/Widget-Entry.js", // Entry point
   output: {
-    path: path.resolve(__dirname, 'build'), // Output directory
-    filename: 'ai-chat.js', // Output bundle file
+    path: path.resolve(__dirname, "build"), // Output directory
+    filename: "ai-chat.js", // Output bundle file
     clean: true, // Clean the dist folder on each build
-    library: 'aiChat',
-    libraryTarget: 'umd',
-    libraryExport: 'app'
+    library: "aiChat",
+    libraryTarget: "umd",
+    libraryExport: "app",
   },
-  mode: 'development', // Development mode
+  mode: "development", // Development mode
   devServer: {
-    static: path.resolve(__dirname, 'public'), // Serve static files
+    static: path.resolve(__dirname, "public"), // Serve static files
     port: 3000, // Development server port
     open: true, // Open browser automatically
   },
@@ -27,34 +33,35 @@ module.exports = {
         test: /\.js$/, // Process JavaScript files
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'], // Use Babel presets
+            presets: ["@babel/preset-env", "@babel/preset-react"], // Use Babel presets
           },
         },
       },
       {
         test: /\.css$/, // Process CSS files
-        use: ['style-loader', 'css-loader', 'postcss-loader'], // CSS and Style loaders
+        use: ["style-loader", "css-loader", "postcss-loader"], // CSS and Style loaders
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg)$/i, // Process image files
-        type: 'asset/resource', // Use Webpack's asset modules
+        type: "asset/resource", // Use Webpack's asset modules
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html', // Use a template for HTML
+      template: "./public/index.html", // Use a template for HTML
+    }),
+    // Inject environment variables into the build process
+    new webpack.DefinePlugin({
+      "process.env": JSON.stringify(process.env),
     }),
   ],
   resolve: {
-    extensions: ['.js', '.jsx'], // Resolve JS and JSX files
+    extensions: [".js", ".jsx"], // Resolve JS and JSX files
   },
 };
-
-
-
 
 // const path = require("path");
 // const webpack = require("webpack")
@@ -67,7 +74,6 @@ module.exports = {
 // const CopyWebpackPlugin = require('copy-webpack-plugin');
 // const Dotenv = require('dotenv-webpack');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 
 // const ROOT = path.resolve(__dirname, "src");
 // // const NLP_DIRNAME = "nlp";
@@ -86,7 +92,6 @@ module.exports = {
 // };
 
 // const WEBPACK_ENTRIES_DIRNAME = "webpack-entries";
-
 
 // const UMD_LIBRARY_TARGET = "umd";
 // // library & filename should be different for widget, landing, embed
@@ -289,7 +294,6 @@ module.exports = {
 //   },
 // });
 
-
 // function botonicWidgetConfig() {
 //   return {
 //     stats: {
@@ -352,9 +356,6 @@ module.exports = {
 //   };
 // }
 
-
 // module.exports = function (env, argv) {
 //   return [botonicWidgetConfig(argv.mode)];
 // };
-
-
