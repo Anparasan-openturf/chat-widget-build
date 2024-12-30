@@ -40,7 +40,7 @@ import "./assets/styles/index.css";
 
 // }
 const host = document.createElement('div');
-host.id = 'aichat_durai';
+host.id = 'chat-widget-root';
       if (document.body.firstChild)
         document.body.insertBefore(host, document.body.firstChild)
       else document.body.appendChild(host)
